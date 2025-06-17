@@ -1,4 +1,3 @@
-// App.js
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AOS from 'aos';
@@ -9,20 +8,21 @@ import About from './components/About';
 import Features from './components/Features';
 import Teachers from './components/Teachers';
 import Gallery from './components/Gallery';
-// import Events from './components/Events';
 import Notices from './components/Notices';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Navbar from './components/Navbar';
+
 import Signup from './pages/Signup';
-import Login from './pages/Login1'; // Your login page
+import Login from './pages/Login1';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminRoute from './components/AdminRoute';
 import Profile from './components/Profile';
+import MidDayMeals from './components/MidDayMeals';
 
 import 'react-datepicker/dist/react-datepicker.css';
 import { signOut, onAuthStateChanged } from 'firebase/auth';
-import { auth, db } from './firebase';  // Make sure your firebase.js exports both auth and db
+import { auth, db } from './firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 async function createUserProfile(user) {
@@ -35,7 +35,7 @@ async function createUserProfile(user) {
     await setDoc(userRef, {
       name: user.displayName || 'Anonymous',
       email: user.email,
-      role: 'student',        // Default role, you can change or enhance this later
+      role: 'student',
       profilePic: user.photoURL || null,
       createdAt: new Date()
     });
@@ -59,14 +59,12 @@ function HomePage() {
     <>
       <div className="pt-20">
         <section id="hero"><Hero /></section>
-  <section id="about"><About /></section>
-  <section id="teachers"><Teachers /></section>
-  <section id="notices"><Notices /></section>
-  <section id="gallery"><Gallery /></section>
-  {/* <section id="events"><Events /></section>    Events before Contact */}
-  <section id="features"><Features /></section>
-  <section id="contact"><Contact /></section>  {/* Contact after Events */}
-  
+        <section id="about"><About /></section>
+        <section id="teachers"><Teachers /></section>
+        <section id="notices"><Notices /></section>
+        <section id="gallery"><Gallery /></section>
+        <section id="features"><Features /></section>
+        <section id="contact"><Contact /></section>
 
         {user && (
           <div className="text-center my-4">
@@ -99,19 +97,22 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/profile" element={<Profile />} />
-
-        {/* Admin dashboard protected route */}
         <Route
           path="/admin"
           element={
             <AdminRoute>
-              <AdminDashboard/>
+              <AdminDashboard />
             </AdminRoute>
           }
         />
-
-        {/* Optional: Add 404 route if needed */}
-        {/* <Route path="*" element={<NotFound />} /> */}
+        <Route
+          path="/midday-meals"
+          element={
+            <div className="container mx-auto p-4 pt-24">
+              <MidDayMeals />
+            </div>
+          }
+        />
       </Routes>
     </Router>
   );

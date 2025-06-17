@@ -1,27 +1,24 @@
 import React, { useState } from 'react';
-// import AddEvent from '../components/AddEvent';
-// import ManageEvent from '../components/ManageEvent';
 import AddGalleryImage from '../components/AddGalleryImage';
 import ManageGallery from '../components/ManageGallery';
 import AddNotice from '../components/AddNotice';
 import ManageNotice from '../components/ManageNotice';
 import AddTeacher from '../components/AddTeacher';
 import ManageTeachers from '../components/ManageTeachers';
+import MidDayMeals from '../components/MidDayMeals';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('notices');
 
+  const tabs = [
+    { key: 'gallery', label: 'Gallery' },
+    { key: 'notices', label: 'Notices' },
+    { key: 'teachers', label: 'Teachers' },
+    { key: 'meals', label: 'Mid Day Meals' },
+  ];
+
   const renderContent = () => {
     switch (activeTab) {
-      // case 'events':
-      //   return (
-      //     <>
-      //       <AddEvent />
-      //       <div className="mt-6">
-      //         <ManageEvent />
-      //       </div>
-      //     </>
-      //   );
       case 'gallery':
         return (
           <>
@@ -49,29 +46,28 @@ const AdminDashboard = () => {
             </div>
           </>
         );
+      case 'meals':
+        return (
+          <div className="pt-4">
+            <MidDayMeals />
+          </div>
+        );
       default:
         return null;
     }
   };
 
-  const tabs = [
-    // { key: 'events', label: 'Events' },
-    { key: 'gallery', label: 'Gallery' },
-    { key: 'notices', label: 'Notices' },
-    { key: 'teachers', label: 'Teachers' },
-  ];
-
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-bold text-center mb-8 text-blue-700">Admin Dashboard</h1>
+    <div className="p-4 sm:p-6 bg-gray-50 min-h-screen">
+      <h1 className="text-2xl sm:text-3xl font-bold text-center mb-8 text-blue-700">Admin Dashboard</h1>
 
       {/* Tabs */}
-      <div className="flex flex-wrap justify-center gap-4 mb-8">
+      <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-8">
         {tabs.map(({ key, label }) => (
           <button
             key={key}
             onClick={() => setActiveTab(key)}
-            className={`px-6 py-2 rounded-full font-semibold transition duration-300 shadow-sm ${
+            className={`px-4 sm:px-6 py-2 rounded-full font-semibold transition duration-300 shadow-sm text-sm sm:text-base ${
               activeTab === key
                 ? 'bg-blue-600 text-white scale-105'
                 : 'bg-white text-gray-700 hover:bg-blue-100'
@@ -83,7 +79,7 @@ const AdminDashboard = () => {
       </div>
 
       {/* Section Content */}
-      <div className="max-w-5xl mx-auto">{renderContent()}</div>
+      <div className="max-w-6xl mx-auto">{renderContent()}</div>
     </div>
   );
 };
