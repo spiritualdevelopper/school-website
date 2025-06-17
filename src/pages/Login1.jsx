@@ -15,7 +15,11 @@ const Login = () => {
       // After login redirect everyone to home page
       navigate('/', { replace: true });
     } catch (error) {
-      alert(error.message);
+      if (error.code === 'auth/too-many-requests') {
+        alert('Too many login attempts. Please wait a few minutes before trying again.');
+      } else {
+        alert(error.message);
+      }
     }
   };
 
