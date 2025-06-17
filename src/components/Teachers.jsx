@@ -3,8 +3,8 @@ import { motion } from 'framer-motion';
 
 const teachers = [
   {
-    name: 'Smt. Lakshmi Devi',
-    subject: 'Mathematics',
+    name: 'Mannem Venkateshwarlu',
+    subject: 'LFL Head Master',
     image: 'https://via.placeholder.com/150',
   },
   {
