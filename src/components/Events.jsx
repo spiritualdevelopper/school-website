@@ -1,48 +1,32 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import AddEvent from './AddEvent';
+import React, { useEffect, useState } from 'react';
+import { db } from '../firebase';
+import { collection, getDocs, orderBy, query } from 'firebase/firestore';
 
 const Events = () => {
-  const [events, setEvents] = useState([
-    {
-      id: 1,
-      title: 'Annual Day Celebration',
-      date: 'March 10, 2025',
-      description: 'Cultural programs and student performances.',
-    },
-  ]);
+  const [events, setEvents] = useState([]);
 
-  const handleAddEvent = (event) => {
-    setEvents([event, ...events]);
-  };
+  useEffect(() => {
+    const fetchEvents = async () => {
+      const q = query(collection(db, 'events'), orderBy('createdAt', 'desc'));
+      const snapshot = await getDocs(q);
+      setEvents(snapshot.docs.map(doc => doc.data()));
+    };
+
+    fetchEvents();
+  }, []);
 
   return (
-    <motion.section
-      id="events"
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-      className="bg-gray-100 py-12 px-4 md:px-12"
-    >
-      <AddEvent onAddEvent={handleAddEvent} />
-
-      <div className="max-w-6xl mx-auto text-center">
-        <h2 className="text-3xl font-bold mb-6">Events & Achievements</h2>
-        <div className="grid md:grid-cols-3 gap-6 mt-8 text-left">
-          {events.map((event) => (
-            <motion.div
-              key={event.id}
-              whileHover={{ scale: 1.03 }}
-              className="bg-white rounded-lg shadow-lg p-5"
-            >
-              <h3 className="text-lg font-bold text-blue-700">{event.title}</h3>
-              <p className="text-sm text-gray-500">{event.date}</p>
-              <p className="mt-2">{event.description}</p>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </motion.section>
+    <div className="py-10 bg-gray-100 text-center">
+      <h2 className="text-3xl font-bold mb-6 text-green-600">Upcoming Events</h2>
+      <ul className="space-y-4 max-w-xl mx-auto text-left">
+        {events.map((event, idx) => (
+          <li key={idx} className="p-4 bg-white rounded shadow">
+            <h3 className="text-xl font-semibold">{event.title}</h3>
+            <p className="text-gray-500">Date: {event.date}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 };
 

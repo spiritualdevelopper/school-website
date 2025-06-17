@@ -1,67 +1,51 @@
 import React, { useState } from 'react';
-import DatePicker from 'react-datepicker';
-import { v4 as uuidv4 } from 'uuid';
+import { db } from '../firebase';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 
-const AddEvent = ({ onAddEvent }) => {
+const AddEvent = () => {
   const [title, setTitle] = useState('');
-  const [date, setDate] = useState(new Date());
-  const [description, setDescription] = useState('');
+  const [date, setDate] = useState('');
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!title || !description) return alert('All fields are required!');
+  const handleAddEvent = async () => {
+    if (!title || !date) return alert("Fill all fields");
 
-    const newEvent = {
-      id: uuidv4(),
-      title,
-      date: date.toDateString(),
-      description,
-    };
-
-    onAddEvent(newEvent);
-    setTitle('');
-    setDescription('');
-    setDate(new Date());
+    try {
+      await addDoc(collection(db, 'events'), {
+        title,
+        date,
+        createdAt: serverTimestamp()
+      });
+      alert("Event added!");
+      setTitle('');
+      setDate('');
+    } catch (err) {
+      alert("Failed: " + err.message);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-xl shadow-md mb-8 max-w-xl mx-auto">
-      <h2 className="text-2xl font-semibold mb-4 text-center">Add New Event</h2>
-      <div className="mb-4">
-        <label className="block font-medium mb-1">Event Title</label>
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="w-full border px-3 py-2 rounded-md"
-          placeholder="Enter event title"
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block font-medium mb-1">Date</label>
-        <DatePicker
-          selected={date}
-          onChange={(date) => setDate(date)}
-          className="w-full border px-3 py-2 rounded-md"
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block font-medium mb-1">Description</label>
-        <textarea
-          rows={4}
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="w-full border px-3 py-2 rounded-md"
-          placeholder="Event details..."
-        />
-      </div>
+    <div>
+      <h2 className="text-xl font-semibold mb-4">Add Event</h2>
+      <input
+        type="text"
+        placeholder="Event Title"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        className="w-full p-2 border mb-3 rounded"
+      />
+      <input
+        type="date"
+        value={date}
+        onChange={(e) => setDate(e.target.value)}
+        className="w-full p-2 border mb-3 rounded"
+      />
       <button
-        type="submit"
-        className="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 w-full"
+        onClick={handleAddEvent}
+        className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
       >
         Add Event
       </button>
-    </form>
+    </div>
   );
 };
 

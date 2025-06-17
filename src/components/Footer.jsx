@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaFacebook, FaYoutube, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaFacebook, FaYoutube } from 'react-icons/fa';
 
 
 const Footer = () => {
