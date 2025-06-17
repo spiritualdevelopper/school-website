@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { auth, db, storage } from '../firebase';
+import { auth, db } from '../firebase';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import uploadToCloudinary from '../utils/uploadToCloudinary';
 
 function Profile() {
   const [profile, setProfile] = useState(null);
@@ -15,7 +15,7 @@ function Profile() {
   useEffect(() => {
     if (!user) return;
 
-    async function fetchProfile() {
+    const fetchProfile = async () => {
       setLoading(true);
       const userRef = doc(db, 'users', user.uid);
       const userSnap = await getDoc(userRef);
@@ -27,45 +27,38 @@ function Profile() {
         setRole(data.role);
       }
       setLoading(false);
-    }
+    };
 
     fetchProfile();
   }, [user]);
 
-  async function handleSave() {
+  const handleSave = async () => {
     if (!user) return;
     const userRef = doc(db, 'users', user.uid);
-    await updateDoc(userRef, {
-      name,
-      role,
-    });
+    await updateDoc(userRef, { name, role });
     alert('Profile updated!');
-  }
+  };
 
-  async function handleImageUpload(e) {
+  const handleImageUpload = async (e) => {
     if (!user) return;
     const file = e.target.files[0];
     if (!file) return;
 
     setUploading(true);
     try {
-      const storageRef = ref(storage, `profile_pics/${user.uid}/${file.name}`);
-      await uploadBytes(storageRef, file);
-      const url = await getDownloadURL(storageRef);
+      const url = await uploadToCloudinary(file);
 
-      // Update profile picture URL in Firestore
       const userRef = doc(db, 'users', user.uid);
       await updateDoc(userRef, { profilePic: url });
 
-      // Update local state with cache-busting param
       setProfile((prev) => ({ ...prev, profilePic: url }));
       alert('Profile picture updated!');
     } catch (err) {
-      console.error('Error uploading image:', err);
+      console.error('Cloudinary upload error:', err);
       alert('Failed to upload image');
     }
     setUploading(false);
-  }
+  };
 
   if (loading) return <p>Loading profile...</p>;
   if (!user) return <p>Please log in to view profile.</p>;
@@ -77,7 +70,7 @@ function Profile() {
       <div className="mb-4">
         {profile?.profilePic ? (
           <img
-            src={profile.profilePic + `?t=${Date.now()}`} // cache-busting param here
+            src={`${profile.profilePic}?t=${Date.now()}`}
             alt="Profile"
             className="w-32 h-32 rounded-full object-cover"
           />
@@ -93,6 +86,7 @@ function Profile() {
           disabled={uploading}
           className="mt-2"
         />
+        {uploading && <p className="text-sm text-gray-500">Uploading...</p>}
       </div>
 
       <div className="mb-4">

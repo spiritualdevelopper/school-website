@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-// import AddEvent from '../components/AddEvent';
-// import ManageEvent from '../components/ManageEvent';
+import AddEvent from '../components/AddEvent';
+import ManageEvent from '../components/ManageEvent';
 import AddGalleryImage from '../components/AddGalleryImage';
 import ManageGallery from '../components/ManageGallery';
 import AddNotice from '../components/AddNotice';
@@ -9,19 +9,19 @@ import AddTeacher from '../components/AddTeacher';
 import ManageTeachers from '../components/ManageTeachers';
 
 const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState('notices');
+  const [activeTab, setActiveTab] = useState('events');
 
   const renderContent = () => {
     switch (activeTab) {
-      // case 'events':
-      //   return (
-      //     <>
-      //       <AddEvent />
-      //       <div className="mt-6">
-      //         <ManageEvent />
-      //       </div>
-      //     </>
-      //   );
+      case 'events':
+        return (
+          <>
+            <AddEvent />
+            <div className="mt-6">
+              <ManageEvent />
+            </div>
+          </>
+        );
       case 'gallery':
         return (
           <>
@@ -55,7 +55,7 @@ const AdminDashboard = () => {
   };
 
   const tabs = [
-    // { key: 'events', label: 'Events' },
+    { key: 'events', label: 'Events' },
     { key: 'gallery', label: 'Gallery' },
     { key: 'notices', label: 'Notices' },
     { key: 'teachers', label: 'Teachers' },

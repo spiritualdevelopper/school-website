@@ -9,7 +9,7 @@ import About from './components/About';
 import Features from './components/Features';
 import Teachers from './components/Teachers';
 import Gallery from './components/Gallery';
-import Events from './components/Events';
+// import Events from './components/Events';
 import Notices from './components/Notices';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
@@ -60,12 +60,13 @@ function HomePage() {
       <div className="pt-20">
         <section id="hero"><Hero /></section>
   <section id="about"><About /></section>
-  <section id="features"><Features /></section>
   <section id="teachers"><Teachers /></section>
-  <section id="gallery"><Gallery /></section>
-  <section id="events"><Events /></section>    {/* Events before Contact */}
-  <section id="contact"><Contact /></section>  {/* Contact after Events */}
   <section id="notices"><Notices /></section>
+  <section id="gallery"><Gallery /></section>
+  {/* <section id="events"><Events /></section>    Events before Contact */}
+  <section id="features"><Features /></section>
+  <section id="contact"><Contact /></section>  {/* Contact after Events */}
+  
 
         {user && (
           <div className="text-center my-4">
@@ -104,7 +105,7 @@ function App() {
           path="/admin"
           element={
             <AdminRoute>
-              <AdminDashboard />
+              <AdminDashboard/>
             </AdminRoute>
           }
         />

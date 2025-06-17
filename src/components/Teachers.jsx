@@ -1,62 +1,40 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-
-const teachers = [
-  {
-    name: 'Mannem Venkateshwarlu',
-    subject: 'LFL Head Master',
-    image: 'https://via.placeholder.com/150',
-  },
-  {
-    name: 'Sri. Ramesh Goud',
-    subject: 'Science',
-    image: 'https://via.placeholder.com/150',
-  },
-  {
-    name: 'Smt. Anitha Kumari',
-    subject: 'Telugu',
-    image: 'https://via.placeholder.com/150',
-  },
-  {
-    name: 'Sri. Naresh Kumar',
-    subject: 'English',
-    image: 'https://via.placeholder.com/150',
-  },
-];
+import React, { useEffect, useState } from 'react';
+import { db } from '../firebase';
+import { collection, getDocs } from 'firebase/firestore';
 
 const Teachers = () => {
+  const [teachers, setTeachers] = useState([]);
+
+  useEffect(() => {
+    const fetch = async () => {
+      const snapshot = await getDocs(collection(db, 'teachers'));
+      setTeachers(snapshot.docs.map(doc => doc.data()));
+    };
+    fetch();
+  }, []);
+
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 1 }}
-      viewport={{ once: true }}
-      className="bg-gray-100 py-16 px-4 md:px-16 text-gray-800"
-    >
-      <div className="max-w-6xl mx-auto text-center">
-        <h2 className="text-4xl font-bold mb-6 border-b-4 border-blue-500 inline-block pb-2">
-          Our Dedicated Teachers
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 mt-10">
-          {teachers.map((teacher, index) => (
-            <motion.div
-              key={index}
-              className="bg-white rounded-xl shadow-lg p-6"
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: 'spring', stiffness: 300 }}
-            >
-              <img
-                src={teacher.image}
-                alt={teacher.name}
-                className="w-24 h-24 rounded-full mx-auto"
-              />
-              <h3 className="mt-4 text-xl font-semibold">{teacher.name}</h3>
-              <p className="text-blue-600">{teacher.subject}</p>
-            </motion.div>
-          ))}
-        </div>
+    <section className="p-6">
+      <h1 className="text-3xl font-bold text-center mb-8">Our Teachers</h1>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {teachers.map((teacher, index) => (
+          <div key={index} className="bg-white p-4 shadow rounded text-center">
+            <img
+              src={teacher.imageUrl} // ✅ changed from photoURL to imageUrl
+              alt={teacher.name}
+              className="h-40 w-40 object-cover mx-auto rounded-full mb-4"
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = 'https://via.placeholder.com/150?text=No+Image';
+              }}
+            />
+            <h2 className="text-xl font-semibold">{teacher.name}</h2>
+            <p className="text-gray-600">{teacher.designation}</p>
+            {teacher.description && <p className="text-sm text-gray-500 mt-2">{teacher.description}</p>}
+          </div>
+        ))}
       </div>
-    </motion.section>
+    </section>
   );
 };
 
